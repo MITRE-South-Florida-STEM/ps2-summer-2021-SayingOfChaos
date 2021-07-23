@@ -61,7 +61,10 @@ def is_word_guessed(secret_word, letters_guessed):
       False otherwise
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    for sletter in secret_word:
+      if sletter not in letters_guessed:
+        return False
+    return True
 
 
 
@@ -73,8 +76,14 @@ def get_guessed_word(secret_word, letters_guessed):
       which letters in secret_word have been guessed so far.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
-
+    gword = ""
+    for sletter in secret_word:
+      if sletter in letters_guessed:
+        gword += sletter + " " #Even easier to see
+      else:
+        gword += "_ "
+    return gword
+      
 
 
 def get_available_letters(letters_guessed):
@@ -84,9 +93,13 @@ def get_available_letters(letters_guessed):
       yet been guessed.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
-    
-    
+    aletters = ""
+    for letter in string.ascii_lowercase:
+      if letter not in letters_guessed:
+        aletters += letter + " " #Even easier to see
+    return aletters
+
+
 
 def hangman(secret_word):
     '''
@@ -114,8 +127,73 @@ def hangman(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    num_guess = 6
+    num_warning = 3
+    vowels = "aeiou"
+    letters_guessed = ""
 
+    print("\nWelcome to Hangman!!!! \n")
+
+    print("We will be playing a simpel game of hangman. \nYour job is to guess a is to guess a single letter from the alphabet every time I aks you to. \nI will be letting you know the letters you know of your progress at the beggining of the game and at the end of each round. \nBe warn, you only get 6 lives, for if you guess wrong or run out of warnings, and 3 warning for if you input something apart from a single letter of the alphabet or for if you input a repeated letter. \nIf you input a vowel wrong it will cost you 2 lives and a consonant will cost you 1 life.\n")
+
+    print("Now let the game begin! \n")
+
+    print("I am thinking of a word with " + str(len(secret_word)) + " letters. \n")
+
+    # print(secret_word) #Testing
+
+    print("Warning remaining " + str(num_warning) + "\n")
+
+    print("Lives remaining: "  + str(num_guess) + "\n")
+
+    while num_guess != 0:
+      letter = input("Guess a letter: ")
+      print("\n")
+      if len(letter) == 1 and letter.isalpha():
+        if letter not in letters_guessed:
+          letter = str.lower(letter)
+          letters_guessed += letter
+          if letter in secret_word:
+            print("Congrats, " + letter + " is in my secret word. \n")
+          else:
+            print("Sorry, " + letter + " is not in my secret word. \n")
+            if letter in vowels:
+              num_guess -= 2
+            else:
+              num_guess -= 1
+        else:
+          num_warning -= 1
+          if num_warning == 0:
+            print("You have given me a repeated letter, please try again. \nBy the way, you have run out of warning, if you input something wrong again I will be force to take lives away from you. \n")
+          elif num_warning < 0:
+            num_guess -= 1
+            num_warning = 0
+            print("You have given me a repeated letter, please try again. \nNow I will take a life away from you. \n")
+          else:
+            print("You have given me a repeated letter, please try again. \n")
+      else:
+        num_warning -= 1
+        if num_warning == 0:
+          print("You have given me a wrong input, please try again. \nRemember, it has to be a single letter from the alphabet. \nBy the way, you have run out of warning, if you input something wrong again I will be force to take lives away from you. \n")
+        elif num_warning < 0:
+          num_guess -= 1
+          num_warning = 0
+          print("You have given me a wrong input, please try again. \nRemember, it has to be a single letter from the alphabet. \nNow I will take a life away from you. \n")
+        else:
+          print("You have given me a wrong input, please try again. \nRemember, it has to be a single letter from the alphabet. \n")
+      if is_word_guessed(secret_word, letters_guessed):
+        print("Congrats, you have guessed the full word and defeated me. \n YOU WIN!!! :)\n")
+        print("Total score: " + str(len(set(secret_word)) * num_guess) + "\n")
+        break
+      elif num_guess == 0:
+        print("Sorry, you have run out of lives. \nYOU LOSE... :(\n")
+        print("The word was: " + secret_word + "\n")
+        break
+      print("Current progress: " + get_guessed_word(secret_word, letters_guessed) + "\n")
+      print("Letters yet to be guessed: " + get_available_letters(letters_guessed) + "\n")
+      print("Warning remaining: " + str(num_warning) + "\n")
+      print("Lives remaining: " + str(num_guess) + "\n")
+  
 
 
 # When you've completed your hangman function, scroll down to the bottom
@@ -138,7 +216,13 @@ def match_with_gaps(my_word, other_word):
         False otherwise: 
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    guess = my_word.replace(" ", "")
+    if len(guess) != len(other_word):
+      return False
+    for i in range(len(guess)):
+      if guess[i].lower() != other_word[i].lower() and guess[i] != "_":
+        return False
+    return True
 
 
 
@@ -153,7 +237,13 @@ def show_possible_matches(my_word):
 
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    str = ""
+    for other_word in wordlist:
+      if match_with_gaps(my_word, other_word):
+        str += other_word + " "
+    print("Possible Matches: " + str + "\n")
+
+
 
 
 
@@ -185,7 +275,74 @@ def hangman_with_hints(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    num_guess = 6
+    num_warning = 3
+    vowels = "aeiou"
+    letters_guessed = ""
+
+    print("\nWelcome to Hangman!!!! \n")
+
+    print("We will be playing a simpel game of hangman. \nYour job is to guess a is to guess a single letter from the alphabet every time I aks you to. \nI will be letting you know the letters you know of your progress at the beggining of the game and at the end of each round. \nBe warn, you only get 6 lives, for if you guess wrong or run out of warnings, and 3 warning for if you input something apart from a single letter of the alphabet or for if you input a repeated letter. \nIf you input a vowel wrong it will cost you 2 lives and a consonant will cost you 1 life.\n")
+
+    print("Now let the game begin! \n")
+
+    print("I am thinking of a word with " + str(len(secret_word)) + " letters. \n")
+
+    # print(secret_word) #Testing
+
+    print("Warning remaining " + str(num_warning) + "\n")
+
+    print("Lives remaining: "  + str(num_guess) + "\n")
+
+    while num_guess != 0:
+      letter = input("Guess a letter: ")
+      print("\n")
+      if letter == "*":
+        show_possible_matches(get_guessed_word(secret_word, letters_guessed))
+      elif len(letter) == 1 and letter.isalpha():
+        if letter not in letters_guessed:
+          letter = str.lower(letter)
+          letters_guessed += letter
+          if letter in secret_word:
+            print("Congrats, " + letter + " is in my secret word. \n")
+          else:
+            print("Sorry, " + letter + " is not in my secret word. \n")
+            if letter in vowels:
+              num_guess -= 2
+            else:
+              num_guess -= 1
+        else:
+          num_warning -= 1
+          if num_warning == 0:
+            print("You have given me a repeated letter, please try again. \nBy the way, you have run out of warning, if you input something wrong again I will be force to take lives away from you. \n")
+          elif num_warning < 0:
+            num_guess -= 1
+            num_warning = 0
+            print("You have given me a repeated letter, please try again. \nNow I will take a life away from you. \n")
+          else:
+            print("You have given me a repeated letter, please try again. \n")
+      else:
+        num_warning -= 1
+        if num_warning == 0:
+          print("You have given me a wrong input, please try again. \nRemember, it has to be a single letter from the alphabet. \nBy the way, you have run out of warning, if you input something wrong again I will be force to take lives away from you. \n")
+        elif num_warning < 0:
+          num_guess -= 1
+          num_warning = 0
+          print("You have given me a wrong input, please try again. \nRemember, it has to be a single letter from the alphabet. \nNow I will take a life away from you. \n")
+        else:
+          print("You have given me a wrong input, please try again. \nRemember, it has to be a single letter from the alphabet. \n")
+      if is_word_guessed(secret_word, letters_guessed):
+        print("Congrats, you have guessed the full word and defeated me. \n YOU WIN!!! :)\n")
+        print("Total score: " + str(len(set(secret_word)) * num_guess) + "\n")
+        break
+      elif num_guess == 0:
+        print("Sorry, you have run out of lives. \nYOU LOSE... :(\n")
+        print("The word was: " + secret_word + "\n")
+        break
+      print("Current progress: " + get_guessed_word(secret_word, letters_guessed) + "\n")
+      print("Letters yet to be guessed: " + get_available_letters(letters_guessed) + "\n")
+      print("Warning remaining: " + str(num_warning) + "\n")
+      print("Lives remaining: " + str(num_guess) + "\n")
 
 
 
@@ -209,5 +366,5 @@ if __name__ == "__main__":
     # To test part 3 re-comment out the above lines and 
     # uncomment the following two lines. 
     
-    #secret_word = choose_word(wordlist)
-    #hangman_with_hints(secret_word)
+    secret_word = choose_word(wordlist)
+    hangman_with_hints(secret_word)
